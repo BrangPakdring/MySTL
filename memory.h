@@ -2,9 +2,16 @@
 // Created by brang on 1/18/19.
 //
 
-#ifndef MYSTL_ALLOC_H
-#define MYSTL_ALLOC_H
+#ifndef MYSTL_MEMORY_H
+#define MYSTL_MEMORY_H
+
+#include "mystl_alloc.h"
+#include "mystl_construct.h"
+
+BEGIN_NAMESPACE_MYSTD
 
 
 
-#endif //MYSTL_ALLOC_H
+END_NAMESPACE_MYSTD
+
+#endif //MYSTL_MEMORY_H
