@@ -5,4 +5,35 @@
 #ifndef MYSTL_MYSTL_ALLOC_H
 #define MYSTL_MYSTL_ALLOC_H
 
+#include "mystl_config.h"
+
+BEGIN_NAMESPACE_MYSTD
+
+template <class T, class Alloc>
+class simple_alloc
+{
+public:
+	static T*allocate(size_t n)
+	{
+		return n ? (T*)Alloc::allocate(n * sizeof(T)) : 0;
+	}
+
+	static T*allocate()
+	{
+		return (T*)Alloc::allocate(sizeof(T));
+	}
+
+	static void deallocate(T*p, size_t n)
+	{
+		if (n)Alloc::deallocate(p, n * sizeof(T));
+	}
+
+	static void deallocate(T*p)
+	{
+		Alloc::deallocate(p, sizeof(T));
+	}
+};
+
+END_NAMESPACE_MYSTD
+
 #endif //MYSTL_MYSTL_ALLOC_H
