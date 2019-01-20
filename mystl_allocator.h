@@ -12,43 +12,42 @@
 
 BEGIN_NAMESPACE_MYSTD
 
-	template <class T>
-	inline T*allocate(ptrdiff_t size, T*)
-	{
-		T*tmp = (T*)::operator new((size_t)(size * sizeof(T)));
-		if (!tmp)
-		{
-			exit(1);
-		}
-		return tmp;
-	}
-
-	template <class T>
-	inline void deallocate(T*buf)
-	{
-		::operator delete(buf);
-	}
-
 	template<class T>
 	class allocator
 	{
 	public:
-		using value_type = T;
-		using pointer = T *;
-		using const_pointer = const T *;
-		using reference = T &;
-		using const_reference = const T &;
-		using size_type = size_t;
-		using difference_type = ptrdiff_t ;
+		typedef T value_type;
+		typedef T *pointer;
+		typedef const T *const_pointer;
+		typedef T &reference;
+		typedef const T &const_reference;
+		typedef size_t size_type;
+		typedef ptrdiff_t difference_type;
 
-		static pointer allocate(size_type n)
+		template <class U>
+		struct rebind
+		{
+			using other = allocator<U>;
+		};
+
+		static pointer allocate(size_type n, const void* = nullptr)
 		{
 			return mystd::allocate((difference_type)n, (pointer)0);
 		}
 
-		static void deallocate(pointer p)
+		static void deallocate(pointer p, size_type n)
 		{
 			mystd::deallocate(p);
+		}
+
+		static void construct(pointer p, const T&value)
+		{
+			mystd::construct(p, value);
+		}
+
+		static void destroy(pointer p)
+		{
+			mystd::destroy(p);
 		}
 
 		static pointer address(reference x)
@@ -64,13 +63,13 @@ BEGIN_NAMESPACE_MYSTD
 		static size_type init_page_size()
 		{
 			size_type tmp = 4096 / sizeof(T);
-			return 1 > tmp ? 1 : tmp;
+			return /*1 > tmp ? 1 : */tmp;
 		}
 
 		static size_type max_size()
 		{
 			size_type tmp = UINT_MAX / sizeof(T);
-			return 1 > tmp ? 1 : tmp;
+			return /*1 > tmp ? 1 : */tmp;
 		}
 	};
 
@@ -78,7 +77,7 @@ BEGIN_NAMESPACE_MYSTD
 	class allocator<void>
 	{
 	public:
-		using pointer = void*;
+		typedef void*pointer;
 	};
 
 END_NAMESPACE_MYSTD

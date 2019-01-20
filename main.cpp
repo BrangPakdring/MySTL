@@ -5,7 +5,11 @@ using namespace mystd;
 
 int main()
 {
+	std::list<int>ll;
+	ll.begin();
+
 	list<int>l;
+
 	l.push_back(1);
 	l.push_back(2);
 	l.push_back(3);
@@ -27,7 +31,9 @@ int main()
 	for(auto i : l)printf("%d\t", i);
 	puts("");
 
-
-	printf("");
+	l.reverse();
+	for(auto i : l)printf("%d\t", i);
+	puts("");
+	l.clear();
 	return 0;
 }

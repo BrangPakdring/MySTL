@@ -6,6 +6,7 @@
 #define MYSTL_MYSTL_ALLOC_H
 
 #include "mystl_config.h"
+#include "mystl_construct.h"
 
 BEGIN_NAMESPACE_MYSTD
 
@@ -31,7 +32,7 @@ public:
 
 	static void deallocate(T*p)
 	{
-		Alloc::deallocate(p, sizeof(T));
+		Alloc::deallocate(p, 1);
 	}
 };
 

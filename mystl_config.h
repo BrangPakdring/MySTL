@@ -16,9 +16,9 @@ using std::ptrdiff_t;
 
 #define DEBUG_MYSTD 1
 #if DEBUG_MYSTD
-#define DEBUG_PUBLIC(x) public
+#define ACCESSIBILITY(x) public
 #else
-#define DEBUG_PUBLIC(x) x
+#define ACCESSIBILITY(x) x
 #endif
 #ifndef NAMESPACE_MYSTD
 #define NAMESPACE_MYSTD mystd

@@ -11,14 +11,31 @@
 
 BEGIN_NAMESPACE_MYSTD
 
-	template<class TT, class TV>
-	inline void construct(TT *p, const TV &value)
+	template <class T>
+	inline T*allocate(ptrdiff_t size, T*)
 	{
-		new(p)TT(value);
+		T*tmp = (T*)::operator new((size_t)(size * sizeof(T)));
+		if (!tmp)
+		{
+			exit(1);
+		}
+		return tmp;
 	}
 
-	template<class T>
-	inline void destroy(T *p)
+	template <class T>
+	inline void deallocate(T*buf)
+	{
+		::operator delete(buf);
+	}
+
+	template <class T1, class T2>
+	inline void construct(T1*p, const T2&value)
+	{
+		new(p)T1(value);
+	}
+
+	template <class T>
+	inline void destroy(T*p)
 	{
 		p->~T();
 	}
