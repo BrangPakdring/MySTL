@@ -21,18 +21,18 @@ BEGIN_NAMESPACE_MYSTD
 		T data;
 	};
 
-	template<class T, class Ref, class Ptr>
+	template<class T>
 	struct __list_iterator
 	{
-		using self = __list_iterator<T, Ref, Ptr>;
-		using iterator = __list_iterator<T, T &, T *>;
-		using iterator_category = bidirectional_iterator_tag;
-		using value_type = T;
-		using pointer = Ptr;
-		using reference = Ref;
-		using difference_type = ptrdiff_t;
-		using link_type = __list_node<T> *;
-		using size_type = size_t;
+		typedef __list_iterator<T>self;
+		typedef __list_iterator<T>iterator;
+		typedef bidirectional_iterator_tag iterator_category;
+		typedef T value_type;
+		typedef T *pointer;
+		typedef T &reference;
+		typedef ptrdiff_t difference_type;
+		typedef __list_node<T> *link_type;
+		typedef size_t size_type;
 		link_type node;
 
 		__list_iterator() = default;
@@ -41,6 +41,75 @@ BEGIN_NAMESPACE_MYSTD
 		{}
 
 		__list_iterator(const iterator &x) : node(x.node)
+		{}
+
+		bool operator==(const self &x) const
+		{
+			return node == x.node;
+		}
+
+		bool operator!=(const self &x) const
+		{
+			return node != x.node;
+		}
+
+		reference operator*() const
+		{
+			return node->data;
+		}
+
+		pointer operator->() const
+		{
+			return &operator*();
+		}
+
+		self &operator++()
+		{
+			node = node->next;
+			return *this;
+		}
+
+		const self operator++(int)
+		{
+			self t = *this;
+			node = node->next;
+			return t;
+		}
+
+		self &operator--()
+		{
+			node = node->prev;
+			return *this;
+		}
+
+		const self operator--(int)
+		{
+			self t = *this;
+			node = node->prev;
+			return t;
+		}
+	};
+
+	template<class T>
+	struct __list_const_iterator
+	{
+		typedef __list_const_iterator<T>self;
+		typedef __list_const_iterator<T>iterator;
+		typedef bidirectional_iterator_tag iterator_category;
+		typedef T value_type;
+		typedef const T *pointer;
+		typedef const T &reference;
+		typedef ptrdiff_t difference_type;
+		typedef __list_node<T> *link_type;
+		typedef size_t size_type;
+		link_type node;
+
+		__list_const_iterator() = default;
+
+		explicit __list_const_iterator(link_type x) : node(x)
+		{}
+
+		__list_const_iterator(const iterator &x) : node(x.node)
 		{}
 
 		bool operator==(const self &x) const
@@ -93,32 +162,33 @@ BEGIN_NAMESPACE_MYSTD
 	template<class T, class Alloc = allocator<T>>
 	class list
 	{
-	protected:
-		using list_node = __list_node<T>;
-		using list_node_allocator = simple_alloc<T, Alloc>;
+	ACCESSIBILITY(protected):
+		typedef __list_node<T> list_node;
+		typedef simple_alloc<T, Alloc> list_node_allocator;
 
 	public:
-		using link_type = list_node *;
-		using iterator = __list_iterator<T, T&, T*>;
-		using size_type = size_t;
-		using reference = T&;
-		using difference_type = ptrdiff_t;
+		typedef list_node *link_type;
+		typedef __list_iterator<T> iterator;
+		typedef __list_const_iterator<T> const_iterator;
+		typedef size_t size_type;
+		typedef T &reference;
+		typedef ptrdiff_t difference_type;
 
-	protected:
+	ACCESSIBILITY(protected):
 		link_type node;
 		size_type cnt;
 
 		link_type get_node()
 		{
-			return (link_type)list_node_allocator::allocate();
+			return (link_type) list_node_allocator::allocate();
 		}
 
 		void put_node(link_type p)
 		{
-			list_node_allocator::deallocate(p);
+			list_node_allocator::deallocate((T *) p);
 		}
 
-		link_type create_node(const T&x)
+		link_type create_node(const T &x)
 		{
 			link_type p = get_node();
 			construct(&p->data, x);
@@ -138,8 +208,6 @@ BEGIN_NAMESPACE_MYSTD
 			cnt = 0;
 		}
 
-	DEBUG_PUBLIC(protected):
-
 		void transfer(iterator position, iterator first, iterator last)
 		{
 			if (position == last)return;
@@ -154,16 +222,44 @@ BEGIN_NAMESPACE_MYSTD
 
 	public:
 
-		list(){empty_initialize();}
+		list()
+		{
+			empty_initialize();
+		}
+
+		~list()
+		{
+			this->clear();
+		}
 
 		iterator begin()
 		{
 			return iterator(node->next);
 		}
 
+		const_iterator cbegin() const
+		{
+			return const_iterator(node->next);
+		}
+
+		const_iterator begin() const
+		{
+			return cbegin();
+		}
+
 		iterator end()
 		{
 			return iterator(node);
+		}
+
+		const_iterator cend() const
+		{
+			return const_iterator(node);
+		}
+
+		const_iterator end() const
+		{
+			return cend();
 		}
 
 		bool empty() const
@@ -186,7 +282,7 @@ BEGIN_NAMESPACE_MYSTD
 			return *--end();
 		}
 
-		iterator insert(iterator position, const T&x)
+		iterator insert(iterator position, const T &x)
 		{
 			link_type tmp = create_node(x);
 			tmp->prev = position.node->prev;
@@ -197,12 +293,12 @@ BEGIN_NAMESPACE_MYSTD
 			return iterator(tmp);
 		}
 
-		void push_front(const T&x)
+		void push_front(const T &x)
 		{
 			insert(begin(), x);
 		}
 
-		void push_back(const T&x)
+		void push_back(const T &x)
 		{
 			insert(end(), x);
 		}
@@ -241,7 +337,7 @@ BEGIN_NAMESPACE_MYSTD
 			cnt = 0;
 		}
 
-		void remove(const T&value)
+		void remove(const T &value)
 		{
 			iterator first = begin(), last = end();
 			for (iterator it = first; it != last; ++it)
@@ -261,7 +357,7 @@ BEGIN_NAMESPACE_MYSTD
 			}
 		}
 
-		void splice(iterator position, list&l)
+		void splice(iterator position, list &l)
 		{
 			if (this != &l && !l.empty())
 			{
@@ -272,22 +368,39 @@ BEGIN_NAMESPACE_MYSTD
 			}
 		}
 
-		void splice(iterator position, list&l, iterator i)
+		void splice(iterator position, list &l, iterator i)
 		{
-			iterator j = i; ++j;
+			iterator j = i;
+			++j;
 			if (position == i || position == j)return;
 			transfer(position, i, j);
 			--l.cnt;
 			++cnt;
 		}
 
-		void splice(iterator position, list&l, iterator first, iterator last)
+		void splice(iterator position, list &l, iterator first, iterator last)
 		{
 			if (this == &l || first == last)return;
 			transfer(position, first, last);
 			difference_type dis = distance(first, last);
 			l.cnt -= dis;
 			cnt += dis;
+		}
+
+		void reverse()
+		{
+			if (cnt < 2)return;
+			iterator first = ++begin(), last = end();
+			while (first != last)
+			{
+				iterator old = first++;
+				transfer(begin(), old, first);
+			}
+		}
+
+		void sort()
+		{
+
 		}
 	};
 
