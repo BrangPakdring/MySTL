@@ -5,11 +5,21 @@
 #ifndef MYSTL_MYSTL_CONFIG_H
 #define MYSTL_MYSTL_CONFIG_H
 
+namespace mystd
+{
+}
+
 #include <stdlib.h>
+
 using std::size_t;
 using std::ptrdiff_t;
 
-namespace mystd{}
+#define DEBUG_MYSTD 1
+#if DEBUG_MYSTD
+#define DEBUG_PUBLIC(x) public
+#else
+#define DEBUG_PUBLIC(x) x
+#endif
 #ifndef NAMESPACE_MYSTD
 #define NAMESPACE_MYSTD mystd
 #define BEGIN_NAMESPACE_MYSTD namespace mystd {

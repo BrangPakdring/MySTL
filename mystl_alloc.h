@@ -20,7 +20,8 @@ public:
 
 	static T*allocate()
 	{
-		return (T*)Alloc::allocate(sizeof(T));
+		void*tmp = Alloc::allocate(sizeof(T));
+		return (T*)tmp;
 	}
 
 	static void deallocate(T*p, size_t n)

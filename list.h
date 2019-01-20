@@ -40,7 +40,7 @@ BEGIN_NAMESPACE_MYSTD
 		explicit __list_iterator(link_type x) : node(x)
 		{}
 
-		explicit __list_iterator(const iterator &x) : node(x.node)
+		__list_iterator(const iterator &x) : node(x.node)
 		{}
 
 		bool operator==(const self &x) const
@@ -95,25 +95,27 @@ BEGIN_NAMESPACE_MYSTD
 	{
 	protected:
 		using list_node = __list_node<T>;
-		using list_node_allocator = simple_alloc<list_node ,Alloc>;
+		using list_node_allocator = simple_alloc<T, Alloc>;
 
 	public:
 		using link_type = list_node *;
 		using iterator = __list_iterator<T, T&, T*>;
 		using size_type = size_t;
 		using reference = T&;
+		using difference_type = ptrdiff_t;
 
 	protected:
 		link_type node;
+		size_type cnt;
 
 		link_type get_node()
 		{
-			return list_node_allocator::allocate();
+			return (link_type)list_node_allocator::allocate();
 		}
 
 		void put_node(link_type p)
 		{
-			list_node_allocator ::deallocate(p);
+			list_node_allocator::deallocate(p);
 		}
 
 		link_type create_node(const T&x)
@@ -133,6 +135,21 @@ BEGIN_NAMESPACE_MYSTD
 		{
 			node = get_node();
 			node->next = node->prev = node;
+			cnt = 0;
+		}
+
+	DEBUG_PUBLIC(protected):
+
+		void transfer(iterator position, iterator first, iterator last)
+		{
+			if (position == last)return;
+			first.node->prev->next = last.node;
+			last.node->prev->next = position.node;
+			position.node->prev->next = first.node;
+			auto tmp = position.node->prev;
+			position.node->prev = last.node->prev;
+			last.node->prev = first.node->prev;
+			first.node->prev = tmp;
 		}
 
 	public:
@@ -156,7 +173,7 @@ BEGIN_NAMESPACE_MYSTD
 
 		size_type size() const
 		{
-			return distance(begin(), end());
+			return cnt;
 		}
 
 		reference front()
@@ -176,7 +193,8 @@ BEGIN_NAMESPACE_MYSTD
 			tmp->next = position.node;
 			position.node->prev->next = tmp;
 			position.node->prev = tmp;
-			return tmp;
+			++cnt;
+			return iterator(tmp);
 		}
 
 		void push_front(const T&x)
@@ -196,6 +214,7 @@ BEGIN_NAMESPACE_MYSTD
 			prev->next = next;
 			next->prev = prev;
 			destroy_node(position.node);
+			--cnt;
 			return iterator(next);
 		}
 
@@ -219,6 +238,7 @@ BEGIN_NAMESPACE_MYSTD
 				destroy_node(tmp);
 			}
 			node->prev = node->next = node;
+			cnt = 0;
 		}
 
 		void remove(const T&value)
@@ -226,7 +246,7 @@ BEGIN_NAMESPACE_MYSTD
 			iterator first = begin(), last = end();
 			for (iterator it = first; it != last; ++it)
 			{
-				if (*it == value)erase(it);
+				if (*it == value)erase(it), --cnt;
 			}
 		}
 
@@ -236,9 +256,38 @@ BEGIN_NAMESPACE_MYSTD
 			while (++next != last)
 			{
 				if (*first == *next)
-					erase(first);
+					erase(first), --cnt;
 				first = next;
 			}
+		}
+
+		void splice(iterator position, list&l)
+		{
+			if (this != &l && !l.empty())
+			{
+				transfer(position, l.begin(), l.end());
+				difference_type dis = distance(l.begin(), l.end());
+				l.cnt -= dis;
+				cnt += dis;
+			}
+		}
+
+		void splice(iterator position, list&l, iterator i)
+		{
+			iterator j = i; ++j;
+			if (position == i || position == j)return;
+			transfer(position, i, j);
+			--l.cnt;
+			++cnt;
+		}
+
+		void splice(iterator position, list&l, iterator first, iterator last)
+		{
+			if (this == &l || first == last)return;
+			transfer(position, first, last);
+			difference_type dis = distance(first, last);
+			l.cnt -= dis;
+			cnt += dis;
 		}
 	};
 
