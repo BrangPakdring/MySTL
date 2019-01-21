@@ -135,7 +135,7 @@ BEGIN_NAMESPACE_MYSTD
 	}
 
 	template <class Iterator>
-	struct __reverse_iterator_base
+	struct reverse_iterator
 	{
 	protected:
 		Iterator current;
@@ -146,10 +146,10 @@ BEGIN_NAMESPACE_MYSTD
 		typedef typename iterator_traits<Iterator>::pointer pointer;
 		typedef typename iterator_traits<Iterator>::reference reference;
 		typedef Iterator iterator_type;
-		typedef __reverse_iterator_base<Iterator> self;
-		__reverse_iterator_base() = default;
+		typedef reverse_iterator<Iterator> self;
+		reverse_iterator() = default;
 
-		explicit __reverse_iterator_base(iterator_type x) : current(x)
+		explicit reverse_iterator(iterator_type x) : current(x)
 				{}
 
 		bool operator==(const self&x)const
@@ -176,6 +176,32 @@ BEGIN_NAMESPACE_MYSTD
 		pointer operator->() const
 		{
 			return &operator*();
+		}
+
+		self &operator++()
+		{
+			--this->current;
+			return *this;
+		}
+
+		const self operator++(int)
+		{
+			self tmp = *this;
+			--this->current;
+			return tmp;
+		}
+
+		self &operator--()
+		{
+			++this->current;
+			return *this;
+		}
+
+		const self operator--(int)
+		{
+			self tmp = *this;
+			++this->current;
+			return tmp;
 		}
 	};
 

@@ -160,42 +160,18 @@ BEGIN_NAMESPACE_MYSTD
 		}
 	};
 
-	template <class Iterator>
-	struct __list_reverse_iterator : __reverse_iterator_base<Iterator>
-	{
-	public:
-		typedef Iterator iterator_type;
-		typedef __reverse_iterator_base<Iterator> base;
-		typedef __list_reverse_iterator<Iterator> self;
-
-		explicit __list_reverse_iterator(iterator_type x): base(x){}
-
-		self &operator++()
-		{
-			--this->current;
-			return *this;
-		}
-
-		const self operator++(int)
-		{
-			self tmp = *this;
-			--this->current;
-			return tmp;
-		}
-
-		self &operator--()
-		{
-			++this->current;
-			return *this;
-		}
-
-		const self operator--(int)
-		{
-			self tmp = *this;
-			++this->current;
-			return tmp;
-		}
-	};
+//	template <class Iterator>
+//	struct __list_reverse_iterator : reverse_iterator<Iterator>
+//	{
+//	public:
+//		typedef Iterator iterator_type;
+//		typedef reverse_iterator<Iterator> base;
+//		typedef __list_reverse_iterator<Iterator> self;
+//
+//		explicit __list_reverse_iterator(iterator_type x): base(x){}
+//
+//
+//	};
 
 	template <class T, class Alloc = allocator<T>>
 	class list
@@ -208,8 +184,8 @@ BEGIN_NAMESPACE_MYSTD
 		typedef list_node *link_type;
 		typedef __list_iterator<T> iterator;
 		typedef __list_const_iterator<T> const_iterator;
-		typedef __list_reverse_iterator<iterator> reverse_iterator;
-		typedef __list_reverse_iterator<const_iterator>const_reverse_iterator;
+		typedef NAMESPACE_MYSTD::reverse_iterator<iterator> reverse_iterator;
+		typedef NAMESPACE_MYSTD::reverse_iterator<const_iterator>const_reverse_iterator;
 		typedef size_t size_type;
 		typedef T &reference;
 		typedef ptrdiff_t difference_type;

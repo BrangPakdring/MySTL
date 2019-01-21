@@ -76,7 +76,7 @@ BEGIN_NAMESPACE_MYSTD
 	template <class T>
 	struct negate : unary_function<T, T>
 	{
-		T operator()(const T &x)
+		T operator()(const T &x) const
 		{
 			return -x;
 		}
