@@ -6,6 +6,7 @@
 #define MYSTL_TYPE_TRAITS_H
 
 #include "mystl_config.h"
+#include "mystl_iterator.h"
 
 BEGIN_NAMESPACE_MYSTD
 

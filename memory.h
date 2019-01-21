@@ -7,6 +7,7 @@
 
 #include "mystl_alloc.h"
 #include "mystl_construct.h"
+#include "mystl_uninitialized.h"
 
 BEGIN_NAMESPACE_MYSTD
 
