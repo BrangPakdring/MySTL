@@ -3,21 +3,13 @@
 using std::cout;
 using std::endl;
 
-void foo()
-{
-	std::this_thread::sleep_for(std::chrono::microseconds(200));
-	cout << "World" << endl;
-}
-
-void bar(int x)
-{
-	// do stuff...
-}
-
+#include "list.h"
 int main()
 {
-	auto s = std::thread(foo);
-	cout << "Hello" << endl;
-	s.join();
-	return 0;
+	using namespace mystd;
+	list<int>l;
+	l.push_front(1);
+	l.push_back(2);
+	for (auto it = l.cbegin(); it != l.cend(); ++it)
+		cout << (*it) << endl;
 }

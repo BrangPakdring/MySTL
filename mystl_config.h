@@ -28,7 +28,7 @@ using std::swap;
 #endif
 #ifndef NAMESPACE_MYSTD
 #define NAMESPACE_MYSTD mystd
-#define BEGIN_NAMESPACE_MYSTD namespace mystd {
+#define BEGIN_NAMESPACE_MYSTD namespace NAMESPACE_MYSTD {
 #define END_NAMESPACE_MYSTD }
 #endif
 
