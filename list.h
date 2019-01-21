@@ -10,13 +10,14 @@
 #include "mystl_allocator.h"
 #include "mystl_alloc.h"
 #include "mystl_construct.h"
+#include "algorithm.h"
 
 BEGIN_NAMESPACE_MYSTD
 
 	template<class T>
 	struct __list_node
 	{
-		using pointer = __list_node<T> *;
+		typedef __list_node<T> *pointer;
 		pointer prev, next;
 		T data;
 	};
@@ -24,8 +25,8 @@ BEGIN_NAMESPACE_MYSTD
 	template<class T>
 	struct __list_iterator
 	{
-		typedef __list_iterator<T>self;
-		typedef __list_iterator<T>iterator;
+		typedef __list_iterator<T> self;
+		typedef __list_iterator<T> iterator;
 		typedef bidirectional_iterator_tag iterator_category;
 		typedef T value_type;
 		typedef T *pointer;
@@ -93,8 +94,8 @@ BEGIN_NAMESPACE_MYSTD
 	template<class T>
 	struct __list_const_iterator
 	{
-		typedef __list_const_iterator<T>self;
-		typedef __list_const_iterator<T>iterator;
+		typedef __list_const_iterator<T> self;
+		typedef __list_const_iterator<T> iterator;
 		typedef bidirectional_iterator_tag iterator_category;
 		typedef T value_type;
 		typedef const T *pointer;
@@ -141,7 +142,7 @@ BEGIN_NAMESPACE_MYSTD
 		const self operator++(int)
 		{
 			self t = *this;
-			++*this;
+			node = node->next;
 			return t;
 		}
 
@@ -154,7 +155,7 @@ BEGIN_NAMESPACE_MYSTD
 		const self operator--(int)
 		{
 			self t = *this;
-			--*this;
+			node = node->prev;
 			return t;
 		}
 	};
@@ -357,33 +358,52 @@ BEGIN_NAMESPACE_MYSTD
 			}
 		}
 
-		void splice(iterator position, list &l)
+		/**
+		 * Splice list @e x before @e position.
+		 * @param position The position where to splice a list before.
+		 * @param x The list to splice into @e position.
+		 */
+		void splice(iterator position, list &x)
 		{
-			if (this != &l && !l.empty())
+			if (this != &x && !x.empty())
 			{
-				transfer(position, l.begin(), l.end());
-				difference_type dis = distance(l.begin(), l.end());
-				l.cnt -= dis;
+				transfer(position, x.begin(), x.end());
+				difference_type dis = distance(x.begin(), x.end());
+				x.cnt -= dis;
 				cnt += dis;
 			}
 		}
 
-		void splice(iterator position, list &l, iterator i)
+		/**
+		 * Splice iterator @e i in list @e x into @e position.
+		 * @param position The position where to splice an element before.
+		 * @param x The list where iterator @e i was in.
+		 * @param i The iterator to splice into @e position.
+		 */
+		void splice(iterator position, list &x, iterator i)
 		{
 			iterator j = i;
 			++j;
 			if (position == i || position == j)return;
 			transfer(position, i, j);
-			--l.cnt;
+			--x.cnt;
 			++cnt;
 		}
 
-		void splice(iterator position, list &l, iterator first, iterator last)
+		/**
+		 * Splice elements between iterators @e first and @e last into @e position ranged from
+		 * [first, last).
+		 * @param position The position where to splice elements before.
+		 * @param x The list where iterators @e first and @e last was in.
+		 * @param first The first iterator.
+		 * @param last The last iterator.
+		 */
+		void splice(iterator position, list &x, iterator first, iterator last)
 		{
-			if (this == &l || first == last)return;
+			if (this == &x || first == last)return;
 			transfer(position, first, last);
 			difference_type dis = distance(first, last);
-			l.cnt -= dis;
+			x.cnt -= dis;
 			cnt += dis;
 		}
 
@@ -398,9 +418,130 @@ BEGIN_NAMESPACE_MYSTD
 			}
 		}
 
+		/**
+		 * Merge current list with another list @e x, it must be guaranteed that
+		 * before the method call both lists are sorted using operator<.
+		 * @param x The list to sort with current one.
+		 */
+		void merge(list &x)
+		{
+			iterator first1 = begin(), last1 = end(), first2 = x.begin(), last2 = x.end();
+			while (first1 != last1 && first2 != last2)
+			{
+				if (*first2 < *first1)
+				{
+					iterator next = first2;
+					transfer(first1, first2, ++next);
+					first2 = next;
+				} else
+					++first1;
+			}
+			if (first2 != last2)
+				transfer(last1, first2, last2);
+		}
+
+		/**
+		 * Merge current list with another list @e x, it must be guaranteed that
+		 * before the method call both lists are sorted using strict weak ordering
+		 * comparer @e comp.
+		 * @param x The list to sort with current one.
+		 */
+		template<class StrictWeakOrdering>
+		void merge(list &x, StrictWeakOrdering comp)
+		{
+			iterator first1 = begin(), last1 = end(), first2 = x.begin(), last2 = x.end();
+			while (first1 != last1 && first2 != last2)
+			{
+				if (comp(*first2, *first1))
+				{
+					iterator next = first2;
+					transfer(first1, first2, ++next);
+					first2 = next;
+				} else
+					++first1;
+			}
+			if (first2 != last2)
+				transfer(last1, first2, last2);
+		}
+
+		void swap(list &x)
+		{
+			mystd::swap(node, x.node);
+			mystd::swap(cnt, x.cnt);
+		}
+
+//		void print(const char*s = "")
+//		{
+//			puts(s);
+//			for (auto i : *this)
+//				printf("%d\t", i);
+//			puts("");
+//		}
+
+		/**
+		 * Sort current list using merge sort according to operator<.
+		 */
 		void sort()
 		{
+			if (size() < 2)return;
+			list carry, counter[64];
+			int fill = 0;
+			while (!empty())
+			{
+//				this->print("this origin");
+//				carry.print("carry origin");
+				carry.splice(carry.begin(), *this, begin());
+//				this->print("this here");
+//				carry.print("carry here");
+				int i = 0;
+//				char buf[200];
+				while (i < fill && !counter[i].empty())
+				{
+//					carry.print("carry o");
+//					sprintf(buf, "counter[%d] o", i);
+//					counter[i].print(buf);
+					carry.merge(counter[i]);
+//					carry.print("carry h");
+//					sprintf(buf, "counter[%d] o", i);
+//					counter[i].print(buf);
+					++i;
+				}
+				carry.swap(counter[i]);
+//				carry.print("carry hh");
+//				sprintf(buf, "counter[%d] hh", i);
+//				counter[i].print(buf);
+				if (i == fill)++fill;
+			}
+			for (int i = 1; i < fill; ++i)
+				counter[i].merge(counter[i - 1]);
+			swap(counter[fill - 1]);
+		}
 
+		/**
+		 * Sort current list using merge sort according to strict weak ordering
+		 * comparer @e comp.
+		 */
+		template <class StrictWeakOrdering>
+		void sort(StrictWeakOrdering comp)
+		{
+			if (size() < 2)return;
+			list carry, counter[64];
+			int fill = 0;
+			while (!empty())
+			{
+				carry.splice(carry.begin(), *this, begin());
+				int i = 0;
+				while (i < fill && !counter[i].empty())
+				{
+					counter[i].merge(carry, comp);
+					carry.swap(counter[i++]);
+				}
+				carry.swap(counter[i]);
+				if (i == fill)++fill;
+			}
+			for (int i = 1; i < fill; ++i)
+				counter[i].merge(counter[i - 1], comp);
+			swap(counter[fill - 1]);
 		}
 	};
 
