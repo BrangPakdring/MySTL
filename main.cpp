@@ -1,15 +1,18 @@
-#include <cstdio>
+#include <iostream>
 #include "list.h"
 #include <list>
 #include <algorithm>
 
 using namespace mystd;
+using std::cout;
+using std::endl;
 
 int main()
 {
 	std::list<int>ll;
 	ll.begin();
 	ll.sort();
+
 
 	list<int>l;
 	l.push_back(1);
@@ -38,6 +41,12 @@ int main()
 
 	for(auto i : l)printf("%d\t", i);
 	puts("");
+
+	for (auto rit = l.rbegin(); rit != l.rend(); ++rit)
+	{
+		cout << *rit << ' ';
+	}
+	cout << endl;
 
 	l.sort();
 

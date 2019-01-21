@@ -160,6 +160,78 @@ BEGIN_NAMESPACE_MYSTD
 		}
 	};
 
+	template <class Iterator>
+	struct __list_reverse_iterator
+	{
+	protected:
+		Iterator current;
+	public:
+		typedef typename iterator_traits<Iterator>::iterator_category iterator_category;
+		typedef typename iterator_traits<Iterator>::value_type value_type;
+		typedef typename iterator_traits<Iterator>::difference_type difference_type;
+		typedef typename iterator_traits<Iterator>::pointer pointer;
+		typedef typename iterator_traits<Iterator>::reference reference;
+		typedef Iterator iterator_type;
+		typedef __list_reverse_iterator<Iterator> self;
+
+		__list_reverse_iterator() = default;
+
+		explicit __list_reverse_iterator(iterator_type x) : current(x)
+		{}
+
+		bool operator==(const self&x)const
+		{
+			return current == x.current;
+		}
+
+		bool operator!=(const self&x)const
+		{
+			return current != x.current;
+		}
+
+		iterator_type base() const
+		{
+			return current;
+		}
+
+		reference operator*() const
+		{
+			Iterator tmp = current;
+			return *--tmp;
+		}
+
+		pointer operator->() const
+		{
+			return &operator*();
+		}
+
+		self &operator++()
+		{
+			--current;
+			return *this;
+		}
+
+		const self operator++(int)
+		{
+			self tmp = *this;
+			--current;
+			return tmp;
+		}
+
+		self &operator--()
+		{
+			++current;
+			return *this;
+		}
+
+		const self operator--(int)
+		{
+			self tmp = *this;
+			++current;
+			return tmp;
+		}
+	};
+
 	template <class T, class Alloc = allocator<T>>
 	class list
 	{
@@ -171,6 +243,8 @@ BEGIN_NAMESPACE_MYSTD
 		typedef list_node *link_type;
 		typedef __list_iterator<T> iterator;
 		typedef __list_const_iterator<T> const_iterator;
+		typedef __list_reverse_iterator<iterator> reverse_iterator;
+		typedef __list_reverse_iterator<const_iterator>const_reverse_iterator;
 		typedef size_t size_type;
 		typedef T &reference;
 		typedef ptrdiff_t difference_type;
@@ -228,6 +302,11 @@ BEGIN_NAMESPACE_MYSTD
 			empty_initialize();
 		}
 
+		list(list &x)
+		{
+
+		}
+
 		~list()
 		{
 			this->clear();
@@ -248,6 +327,21 @@ BEGIN_NAMESPACE_MYSTD
 			return cbegin();
 		}
 
+		reverse_iterator rbegin()
+		{
+			return reverse_iterator(end());
+		}
+
+		const_reverse_iterator crbegin() const
+		{
+			return const_reverse_iterator(end());
+		}
+
+		const_reverse_iterator rbegin() const
+		{
+			return crbegin();
+		}
+
 		iterator end()
 		{
 			return iterator(node);
@@ -261,6 +355,21 @@ BEGIN_NAMESPACE_MYSTD
 		const_iterator end() const
 		{
 			return cend();
+		}
+
+		reverse_iterator rend()
+		{
+			return reverse_iterator(begin());
+		}
+
+		const_reverse_iterator crend() const
+		{
+			return const_reverse_iterator(begin());
+		}
+
+		const_reverse_iterator rend() const
+		{
+			return crend();
 		}
 
 		bool empty() const
