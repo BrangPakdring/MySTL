@@ -22,15 +22,16 @@ BEGIN_NAMESPACE_MYSTD
 		T data;
 	};
 
-	template <class T>
+	template <class T, class Ref, class Ptr>
 	struct __list_iterator
 	{
-		typedef __list_iterator<T> self;
-		typedef __list_iterator<T> iterator;
+		typedef __list_iterator<T, Ref, Ptr> self;
+		typedef __list_iterator<T, T&, T*> iterator;
+		typedef __list_iterator<T, const T&, const T*>const_iterator;
 		typedef bidirectional_iterator_tag iterator_category;
 		typedef T value_type;
-		typedef T *pointer;
-		typedef T &reference;
+		typedef Ptr pointer;
+		typedef Ref reference;
 		typedef ptrdiff_t difference_type;
 		typedef __list_node<T> *link_type;
 		typedef size_t size_type;
@@ -42,75 +43,6 @@ BEGIN_NAMESPACE_MYSTD
 		{}
 
 		__list_iterator(const iterator &x) : node(x.node)
-		{}
-
-		bool operator==(const self &x) const
-		{
-			return node == x.node;
-		}
-
-		bool operator!=(const self &x) const
-		{
-			return node != x.node;
-		}
-
-		reference operator*() const
-		{
-			return node->data;
-		}
-
-		pointer operator->() const
-		{
-			return &operator*();
-		}
-
-		self &operator++()
-		{
-			node = node->next;
-			return *this;
-		}
-
-		const self operator++(int)
-		{
-			self t = *this;
-			node = node->next;
-			return t;
-		}
-
-		self &operator--()
-		{
-			node = node->prev;
-			return *this;
-		}
-
-		const self operator--(int)
-		{
-			self t = *this;
-			node = node->prev;
-			return t;
-		}
-	};
-
-	template <class T>
-	struct __list_const_iterator
-	{
-		typedef __list_const_iterator<T> self;
-		typedef __list_const_iterator<T> iterator;
-		typedef bidirectional_iterator_tag iterator_category;
-		typedef T value_type;
-		typedef const T *pointer;
-		typedef const T &reference;
-		typedef ptrdiff_t difference_type;
-		typedef __list_node<T> *link_type;
-		typedef size_t size_type;
-		link_type node;
-
-		__list_const_iterator() = default;
-
-		explicit __list_const_iterator(link_type x) : node(x)
-		{}
-
-		__list_const_iterator(const iterator &x) : node(x.node)
 		{}
 
 		bool operator==(const self &x) const
@@ -182,8 +114,8 @@ BEGIN_NAMESPACE_MYSTD
 
 	public:
 		typedef list_node *link_type;
-		typedef __list_iterator<T> iterator;
-		typedef __list_const_iterator<T> const_iterator;
+		typedef typename __list_iterator<T, T&, T*>::iterator iterator;
+		typedef typename iterator::const_iterator const_iterator;
 		typedef NAMESPACE_MYSTD::reverse_iterator<iterator> reverse_iterator;
 		typedef NAMESPACE_MYSTD::reverse_iterator<const_iterator>const_reverse_iterator;
 		typedef size_t size_type;
