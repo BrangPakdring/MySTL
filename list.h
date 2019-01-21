@@ -161,73 +161,38 @@ BEGIN_NAMESPACE_MYSTD
 	};
 
 	template <class Iterator>
-	struct __list_reverse_iterator
+	struct __list_reverse_iterator : __reverse_iterator_base<Iterator>
 	{
-	protected:
-		Iterator current;
 	public:
-		typedef typename iterator_traits<Iterator>::iterator_category iterator_category;
-		typedef typename iterator_traits<Iterator>::value_type value_type;
-		typedef typename iterator_traits<Iterator>::difference_type difference_type;
-		typedef typename iterator_traits<Iterator>::pointer pointer;
-		typedef typename iterator_traits<Iterator>::reference reference;
 		typedef Iterator iterator_type;
+		typedef __reverse_iterator_base<Iterator> base;
 		typedef __list_reverse_iterator<Iterator> self;
 
-		__list_reverse_iterator() = default;
-
-		explicit __list_reverse_iterator(iterator_type x) : current(x)
-		{}
-
-		bool operator==(const self&x)const
-		{
-			return current == x.current;
-		}
-
-		bool operator!=(const self&x)const
-		{
-			return current != x.current;
-		}
-
-		iterator_type base() const
-		{
-			return current;
-		}
-
-		reference operator*() const
-		{
-			Iterator tmp = current;
-			return *--tmp;
-		}
-
-		pointer operator->() const
-		{
-			return &operator*();
-		}
+		explicit __list_reverse_iterator(iterator_type x): base(x){}
 
 		self &operator++()
 		{
-			--current;
+			--this->current;
 			return *this;
 		}
 
 		const self operator++(int)
 		{
 			self tmp = *this;
-			--current;
+			--this->current;
 			return tmp;
 		}
 
 		self &operator--()
 		{
-			++current;
+			++this->current;
 			return *this;
 		}
 
 		const self operator--(int)
 		{
 			self tmp = *this;
-			++current;
+			++this->current;
 			return tmp;
 		}
 	};
@@ -653,6 +618,21 @@ BEGIN_NAMESPACE_MYSTD
 			for (int i = 1; i < fill; ++i)
 				counter[i].merge(counter[i - 1], comp);
 			swap(counter[fill - 1]);
+		}
+
+		inline bool operator==(const list&x) const
+		{
+			iterator first1 = begin(), last1 = end(), first2 = x.begin(), last2 = x.end();
+			for (; first1 != last1 && first2 != last2; ++first1, ++first2)
+			{
+				if (*first1 != *first2)return false;
+			}
+			return first1 == last1 && first2 == last2;
+		}
+
+		inline bool operator!=(const list&x) const
+		{
+			return !operator==(x);
 		}
 	};
 

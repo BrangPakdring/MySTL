@@ -2,57 +2,13 @@
 #include "list.h"
 #include <list>
 #include <algorithm>
-
+#include "mystl_function.h"
 using namespace mystd;
 using std::cout;
 using std::endl;
 
+#include <functional>
 int main()
 {
-	std::list<int>ll;
-	ll.begin();
-	ll.sort();
-
-
-	list<int>l;
-	l.push_back(1);
-	l.push_back(2);
-	l.push_back(3);
-	l.push_back(4);
-
-	l.push_back(5);
-	l.push_back(6);
-	l.push_back(7);
-	l.push_back(8);
-
-
-	for (auto i : l)printf("%d\t", i);
-	puts("");
-
-	auto it = ++l.begin();
-	auto it2 = it, it3 = it;
-	++it2, ++++++it3;
-	l.transfer(it, it2, it3);
-
-	for(auto i : l)printf("%d\t", i);
-	puts("");
-
-	l.reverse();
-
-	for(auto i : l)printf("%d\t", i);
-	puts("");
-
-	for (auto rit = l.rbegin(); rit != l.rend(); ++rit)
-	{
-		cout << *rit << ' ';
-	}
-	cout << endl;
-
-	l.sort();
-
-	for(auto i : l)printf("%d\t", i);
-	puts("");
-
-	l.clear();
-	return 0;
+	cout << plus<int>()(1, 2) << endl;
 }

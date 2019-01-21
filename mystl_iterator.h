@@ -134,6 +134,51 @@ BEGIN_NAMESPACE_MYSTD
 		__advance(i, n, iterator_category(i));
 	}
 
+	template <class Iterator>
+	struct __reverse_iterator_base
+	{
+	protected:
+		Iterator current;
+	public:
+		typedef typename iterator_traits<Iterator>::iterator_category iterator_category;
+		typedef typename iterator_traits<Iterator>::value_type value_type;
+		typedef typename iterator_traits<Iterator>::difference_type difference_type;
+		typedef typename iterator_traits<Iterator>::pointer pointer;
+		typedef typename iterator_traits<Iterator>::reference reference;
+		typedef Iterator iterator_type;
+		typedef __reverse_iterator_base<Iterator> self;
+		__reverse_iterator_base() = default;
+
+		explicit __reverse_iterator_base(iterator_type x) : current(x)
+				{}
+
+		bool operator==(const self&x)const
+		{
+			return current == x.current;
+		}
+
+		bool operator!=(const self&x)const
+		{
+			return current != x.current;
+		}
+
+		iterator_type base() const
+		{
+			return current;
+		}
+
+		reference operator*() const
+		{
+			Iterator tmp = current;
+			return *--tmp;
+		}
+
+		pointer operator->() const
+		{
+			return &operator*();
+		}
+	};
+
 END_NAMESPACE_MYSTD
 
 #endif //MYSTL_MYSTL_ITERATOR_H
