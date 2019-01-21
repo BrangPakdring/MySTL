@@ -12,7 +12,7 @@
 
 BEGIN_NAMESPACE_MYSTD
 
-	template<class T>
+	template <class T>
 	class allocator
 	{
 	public:
@@ -30,9 +30,9 @@ BEGIN_NAMESPACE_MYSTD
 			using other = allocator<U>;
 		};
 
-		static pointer allocate(size_type n, const void* = nullptr)
+		static pointer allocate(size_type n, const void * = nullptr)
 		{
-			return mystd::allocate((difference_type)n, (pointer)0);
+			return mystd::allocate((difference_type) n, (pointer) 0);
 		}
 
 		static void deallocate(pointer p, size_type n)
@@ -40,7 +40,7 @@ BEGIN_NAMESPACE_MYSTD
 			mystd::deallocate(p);
 		}
 
-		static void construct(pointer p, const T&value)
+		static void construct(pointer p, const T &value)
 		{
 			mystd::construct(p, value);
 		}
@@ -77,7 +77,7 @@ BEGIN_NAMESPACE_MYSTD
 	class allocator<void>
 	{
 	public:
-		typedef void*pointer;
+		typedef void *pointer;
 	};
 
 END_NAMESPACE_MYSTD

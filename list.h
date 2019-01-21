@@ -14,7 +14,7 @@
 
 BEGIN_NAMESPACE_MYSTD
 
-	template<class T>
+	template <class T>
 	struct __list_node
 	{
 		typedef __list_node<T> *pointer;
@@ -22,7 +22,7 @@ BEGIN_NAMESPACE_MYSTD
 		T data;
 	};
 
-	template<class T>
+	template <class T>
 	struct __list_iterator
 	{
 		typedef __list_iterator<T> self;
@@ -91,7 +91,7 @@ BEGIN_NAMESPACE_MYSTD
 		}
 	};
 
-	template<class T>
+	template <class T>
 	struct __list_const_iterator
 	{
 		typedef __list_const_iterator<T> self;
@@ -160,7 +160,7 @@ BEGIN_NAMESPACE_MYSTD
 		}
 	};
 
-	template<class T, class Alloc = allocator<T>>
+	template <class T, class Alloc = allocator<T>>
 	class list
 	{
 	ACCESSIBILITY(protected):
@@ -433,7 +433,8 @@ BEGIN_NAMESPACE_MYSTD
 					iterator next = first2;
 					transfer(first1, first2, ++next);
 					first2 = next;
-				} else
+				}
+				else
 					++first1;
 			}
 			if (first2 != last2)
@@ -446,7 +447,7 @@ BEGIN_NAMESPACE_MYSTD
 		 * comparer @e comp.
 		 * @param x The list to sort with current one.
 		 */
-		template<class StrictWeakOrdering>
+		template <class StrictWeakOrdering>
 		void merge(list &x, StrictWeakOrdering comp)
 		{
 			iterator first1 = begin(), last1 = end(), first2 = x.begin(), last2 = x.end();
@@ -457,7 +458,8 @@ BEGIN_NAMESPACE_MYSTD
 					iterator next = first2;
 					transfer(first1, first2, ++next);
 					first2 = next;
-				} else
+				}
+				else
 					++first1;
 			}
 			if (first2 != last2)

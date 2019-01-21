@@ -10,11 +10,11 @@
 
 BEGIN_NAMESPACE_MYSTD
 
-template <class T1, class T2>
-void swap(T1 &a, T2 &b)
-{
-	std::swap(a, b);
-}
+	template <class T1, class T2>
+	void swap(T1 &a, T2 &b)
+	{
+		std::swap(a, b);
+	}
 
 END_NAMESPACE_MYSTD
 
