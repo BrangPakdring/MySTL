@@ -7,6 +7,7 @@ using std::endl;
 #include "stack.h"
 #include "queue.h"
 #include "array.h"
+#include "forward_list.h"
 using namespace mystd;
 
 void print(deque<int>&dq)
@@ -20,6 +21,17 @@ void print(deque<int>&dq)
 
 int main()
 {
+	forward_list<int>fl;
+	for (int i = 0; i < 10; ++i)
+	{
+		fl.push_front(i);
+	}
+
+	for (auto it = ++fl.before_begin(); it != fl.end(); ++it)
+	{
+		cout << *it << endl;
+	}
+
 	deque<int>dq;
 	for (int i = 0; i < 50; ++i)
 	{

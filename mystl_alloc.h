@@ -14,26 +14,26 @@ template <class T, class Alloc>
 class simple_alloc
 {
 public:
-	static T*allocate(size_t n)
+	static T*allocate(size_t n = 1)
 	{
 		return n ? (T*)Alloc::allocate(n * sizeof(T)) : 0;
 	}
 
-	static T*allocate()
-	{
-		void*tmp = Alloc::allocate(sizeof(T));
-		return (T*)tmp;
-	}
+//	static T*allocate()
+//	{
+//		void*tmp = allocate(1);
+//		return (T*)tmp;
+//	}
 
-	static void deallocate(T*p, size_t n)
+	static void deallocate(T*p, size_t n = 1)
 	{
 		if (n)Alloc::deallocate(p, n * sizeof(T));
 	}
 
-	static void deallocate(T*p)
-	{
-		Alloc::deallocate(p, 1);
-	}
+//	static void deallocate(T*p)
+//	{
+//		deallocate(p, 1);
+//	}
 };
 
 END_NAMESPACE_MYSTD
