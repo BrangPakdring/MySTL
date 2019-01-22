@@ -92,19 +92,6 @@ BEGIN_NAMESPACE_MYSTD
 		}
 	};
 
-//	template <class Iterator>
-//	struct __list_reverse_iterator : reverse_iterator<Iterator>
-//	{
-//	public:
-//		typedef Iterator iterator_type;
-//		typedef reverse_iterator<Iterator> base;
-//		typedef __list_reverse_iterator<Iterator> self;
-//
-//		explicit __list_reverse_iterator(iterator_type x): base(x){}
-//
-//
-//	};
-
 	template <class T, class Alloc = allocator<T>>
 	class list
 	{

@@ -66,7 +66,7 @@ BEGIN_NAMESPACE_MYSTD
 	template <class ForwardIterator>
 	inline void __destroy_aux(ForwardIterator, ForwardIterator, __true_type)
 	{
-
+		// Do nothing.
 	}
 
 
