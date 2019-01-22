@@ -106,6 +106,7 @@ BEGIN_NAMESPACE_MYSTD
 		typedef NAMESPACE_MYSTD::reverse_iterator<iterator> reverse_iterator;
 		typedef NAMESPACE_MYSTD::reverse_iterator<const_iterator>const_reverse_iterator;
 		typedef size_t size_type;
+		typedef T value_type;
 		typedef T &reference;
 		typedef ptrdiff_t difference_type;
 
@@ -162,9 +163,23 @@ BEGIN_NAMESPACE_MYSTD
 			empty_initialize();
 		}
 
-		list(list &x)
+		list(const list &x)
 		{
+			// TODO
+		}
 
+		list(list&&x) noexcept
+		{
+			node = x.node;
+			cnt = x.cnt;
+		}
+
+
+
+		list(const initializer_list<value_type>&il) :list()
+		{
+			for (const auto&item : il)
+				push_back(item);
 		}
 
 		~list()
