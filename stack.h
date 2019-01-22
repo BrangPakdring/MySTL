@@ -56,11 +56,6 @@ BEGIN_NAMESPACE_MYSTD
 			return c == x.c;
 		}
 
-		bool operator!=(const stack &x) const
-		{
-			return c != x.c;
-		}
-
 		bool operator<(const stack &x) const
 		{
 			return c < x.c;
