@@ -1,0 +1,67 @@
+//
+// Created by brang on 1/22/19.
+//
+
+#ifndef MYSTL_QUEUE_H
+#define MYSTL_QUEUE_H
+
+#include "mystl_config.h"
+#include "deque.h"
+
+BEGIN_NAMESPACE_MYSTD
+
+	template <class T, class Sequence = deque<T>>
+	class queue
+	{
+	public:
+		typedef typename Sequence::value_type value_type;
+		typedef typename Sequence::size_type size_type;
+		typedef typename Sequence::reference reference;
+		typedef typename Sequence::const_reference const_reference;
+	ACCESSIBILITY(protected):
+		Sequence c;
+	public:
+		bool empty() const
+		{
+			return c.empty();
+		}
+
+		size_type size() const
+		{
+			return c.size();
+		}
+
+		reference front()
+		{
+			return c.front();
+		}
+
+		const_reference front() const
+		{
+			return c.front();
+		}
+
+		void push(const value_type &x)
+		{
+			c.push_back(x);
+		}
+
+		void pop()
+		{
+			c.pop_front();
+		}
+
+		bool operator==(const queue &x) const
+		{
+			return c == x.c;
+		}
+
+		bool operator<(const queue &x) const
+		{
+			return c < x.c;
+		}
+	};
+
+END_NAMESPACE_MYSTD
+
+#endif //MYSTL_QUEUE_H
