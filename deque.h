@@ -9,13 +9,15 @@
 #include "mystl_allocator.h"
 #include "mystl_uninitialized.h"
 #include "mystl_algobase.h"
-
+#include <cassert>
 BEGIN_NAMESPACE_MYSTD
 
 	inline size_t __deque_buf_size(size_t n, size_t sz)
 	{
-		return n ?: sz < 512 ? size_t(512 / sz)
-		                     : size_t(1);
+		size_t r = n ? n : sz < 512 ? size_t(512 / sz)
+		                            : size_t(1);
+//		cout << r << endl;
+		return r;
 	}
 
 	template <class T, class Ref, class Ptr, size_t BufSize>
@@ -24,7 +26,7 @@ BEGIN_NAMESPACE_MYSTD
 		typedef __deque_iterator<T, T &, T *, BufSize> iterator;
 		typedef __deque_iterator<T, const T &, const T *, BufSize> const_iterator;
 
-		static constexpr size_t buffer_size()
+		static size_t buffer_size()
 		{
 			return __deque_buf_size(BufSize, sizeof(T));
 		}
@@ -163,18 +165,23 @@ BEGIN_NAMESPACE_MYSTD
 		typedef T value_type;
 		typedef value_type *pointer;
 		typedef value_type &reference;
+		typedef const value_type *const_pointer;
+		typedef const value_type &const_reference;
 		typedef size_t size_type;
 		typedef __deque_iterator<T, T &, T *, BufSize> iterator;
-		typedef __deque_iterator<T, const T&, const T*, BufSize>const_iterator;
-		typedef NAMESPACE_MYSTD:: reverse_iterator<iterator>reverse_iterator;
-		typedef NAMESPACE_MYSTD:: reverse_iterator<const_iterator>const_reverse_iterator;
+		typedef __deque_iterator<T, const T &, const T *, BufSize> const_iterator;
+		typedef NAMESPACE_MYSTD::reverse_iterator<iterator> reverse_iterator;
+		typedef NAMESPACE_MYSTD::reverse_iterator<const_iterator> const_reverse_iterator;
 		typedef ptrdiff_t difference_type;
 
 	ACCESSIBILITY(protected):
+		static size_t buffer_size()
+		{
+			return __deque_iterator<T, T &, T *, BufSize>::buffer_size();
+		}
+
 		typedef pointer *map_pointer;
-		typedef simple_alloc<value_type, Alloc> data_allocator;
-		typedef simple_alloc<pointer, Alloc> map_allocator;
-		using iterator::buffer_size;
+		typedef simple_alloc<pointer, allocator<pointer>> map_allocator;
 
 		iterator start;
 		iterator finish;
@@ -183,12 +190,12 @@ BEGIN_NAMESPACE_MYSTD
 
 		pointer allocate_node(size_type n = 1)
 		{
-			return data_allocator::allocate(n);
+			return Alloc::allocate(n * buffer_size());
 		}
 
 		void deallocate_node(pointer node, size_type n = 1)
 		{
-			data_allocator::deallocate(node, n);
+			Alloc::deallocate(node, n * buffer_size());
 		}
 
 		void create_map_and_nodes(size_type num_elements)
@@ -202,8 +209,8 @@ BEGIN_NAMESPACE_MYSTD
 
 			try
 			{
-				do *cur = allocate_node();
-				while (cur++ <= nfinish);
+				for (; cur <= nfinish; ++cur)
+					*cur = allocate_node();
 			}
 			catch (...) // TODO : commit or rollback
 			{
@@ -214,6 +221,11 @@ BEGIN_NAMESPACE_MYSTD
 			finish.set_node(nfinish);
 			start.cur = start.first;
 			finish.cur = finish.first + num_elements % buffer_size();
+		}
+
+		void empty_initialize()
+		{
+			create_map_and_nodes(0);
 		}
 
 		void fill_initialize(size_type n, const value_type &value)
@@ -271,7 +283,7 @@ BEGIN_NAMESPACE_MYSTD
 				reallocate_map(nodes_to_add, true);
 		}
 
-		void push_back_aux(value_type &t)
+		void push_back_aux(const value_type &t)
 		{
 			value_type t_copy = t;
 			reserve_map_at_back();
@@ -290,7 +302,7 @@ BEGIN_NAMESPACE_MYSTD
 			}
 		}
 
-		void push_front_aux(value_type &t)
+		void push_front_aux(const value_type &t)
 		{
 			value_type t_copy = t;
 			reserve_map_at_front();
@@ -327,7 +339,7 @@ BEGIN_NAMESPACE_MYSTD
 			start.cur = start.first;
 		}
 
-		iterator insert_aux(iterator pos, const value_type& x)
+		iterator insert_aux(iterator pos, const value_type &x)
 		{
 			difference_type index = pos - start;
 			value_type x_copy = x;
@@ -359,9 +371,9 @@ BEGIN_NAMESPACE_MYSTD
 
 	public:
 
-		deque() : deque(8, value_type())
+		deque()
 		{
-
+			empty_initialize();
 		}
 
 		deque(size_type n, const value_type &value) : start(), finish(), map(), map_size()
@@ -442,8 +454,7 @@ BEGIN_NAMESPACE_MYSTD
 		reference back()
 		{
 			iterator tmp = finish;
-			--tmp;
-			return *tmp;
+			return *--tmp;
 		}
 
 		size_type size() const
@@ -463,7 +474,7 @@ BEGIN_NAMESPACE_MYSTD
 
 		void push_back(const value_type &t)
 		{
-			if (finish.cur != finish.last - 1)
+			if (finish.cur < finish.last - 1)
 				construct(finish.cur++, t);
 			else
 				push_back_aux(t);
@@ -562,7 +573,7 @@ BEGIN_NAMESPACE_MYSTD
 			}
 		}
 
-		iterator insert(iterator position, const value_type& x)
+		iterator insert(iterator position, const value_type &x)
 		{
 			if (position.cur == start.cur)
 			{

@@ -69,9 +69,16 @@ BEGIN_NAMESPACE_MYSTD
 	}
 
 	template <class ForwardIterator, class T>
-	inline void uninitialized_fill(ForwardIterator first, ForwardIterator last, const T&x)
+	inline void __uninitialized_fill_aux(ForwardIterator first, ForwardIterator last, const T&x, __false_type)
 	{
-		__uninitialized_fill(first, last, x, value_type(first));
+		fill(first, last, x);
+	}
+
+	template <class ForwardIterator, class T>
+	inline void __uninitialized_fill_aux(ForwardIterator first, ForwardIterator last, const T&x, __true_type)
+	{
+		while (first != last)
+			construct(&*first++, x);
 	}
 
 	template <class ForwardIterator, class T, class T1>
@@ -81,17 +88,10 @@ BEGIN_NAMESPACE_MYSTD
 		__uninitialized_fill_aux(first, last, x, is_POD());
 	}
 
-	template <class ForwardIterator, class T, class T1>
-	inline void __uninitialized_fill_aux(ForwardIterator first, ForwardIterator last, const T&x, __false_type)
+	template <class ForwardIterator, class T>
+	inline void uninitialized_fill(ForwardIterator first, ForwardIterator last, const T&x)
 	{
-		fill(first, last, x);
-	}
-
-	template <class ForwardIterator, class T, class T1>
-	inline void __uninitialized_fill_aux(ForwardIterator first, ForwardIterator last, const T&x, __true_type)
-	{
-		while (first != last)
-			construct(&*first++, x);
+		__uninitialized_fill(first, last, x, value_type(first));
 	}
 
 END_NAMESPACE_MYSTD

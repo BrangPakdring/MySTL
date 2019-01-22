@@ -1,14 +1,73 @@
 #include <iostream>
-#include <thread>
-#include <list>
+#include <deque>
 using std::cout;
 using std::endl;
 
-#include <stack>
 #include "list.h"
+#include "stack.h"
+#include "queue.h"
 #include "array.h"
 using namespace mystd;
+
+void print(deque<int>&dq)
+{
+	for (auto&&item : dq)
+	{
+		cout << item << '\t';
+	}
+	cout << endl;
+}
+
 int main()
 {
+	deque<int>dq;
+	for (int i = 0; i < 50; ++i)
+	{
+		dq.push_back(i);
+		dq.push_front(-i);
+	}
+	print(dq);
+	cout << dq.front() << endl;
+	cout << dq.back() << endl;
+	cout << dq[0] << endl;
+	cout << dq[1] << endl;
+	cout << dq[dq.size() - 1] << endl;
+	cout << dq[dq.size() - 2] << endl;
+	cout << endl;
+	cout << dq.size() << endl;
+	dq.pop_back();
+	cout << dq.size() << endl;
+	print(dq);
+	dq.pop_front();
+	cout << dq.size() << endl;
+	print(dq);
+
+	stack<int>stk;
+	stk.push(1);
+	cout << stk.size() << endl;
+	cout << stk.top() << endl;
+	stk.push(2);
+	cout << stk.size() << endl;
+	cout << stk.top() << endl;
+	stk.pop();
+	cout << stk.size() << endl;
+	cout << stk.top() << endl;
+	stk.pop();
+	cout << stk.size() << endl;
+//	cout << stk.top() << endl;
+
+	queue<int>q;
+	q.push(1);
+	cout << q.size() << endl;
+	cout <<q.front() << endl;
+	q.push(2) ;
+	cout << q.size() << endl;
+	cout << q.front() << endl;
+	q.pop();
+	cout << q.size() << endl;
+	cout << q.front() << endl;
+	q.pop();
+	cout << q.size() << endl;
+//	cout << q.front() << endl;
 
 }

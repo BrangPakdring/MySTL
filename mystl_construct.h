@@ -8,6 +8,8 @@
 #include "mystl_config.h"
 #include "type_traits.h"
 #include <new>
+#include <cassert>
+#include <cstring>
 
 BEGIN_NAMESPACE_MYSTD
 

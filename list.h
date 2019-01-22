@@ -174,8 +174,6 @@ BEGIN_NAMESPACE_MYSTD
 			cnt = x.cnt;
 		}
 
-
-
 		list(const initializer_list<value_type>&il) :list()
 		{
 			for (const auto&item : il)
