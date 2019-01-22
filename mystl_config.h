@@ -7,6 +7,7 @@
 
 #include <cstdlib>
 #include <algorithm>
+#include <initializer_list>
 
 namespace mystd
 {
@@ -18,7 +19,7 @@ using std::ptrdiff_t;
 
 using std::sort;
 using std::swap;
-
+using std::initializer_list;
 
 #define DEBUG_MYSTD 1
 #if DEBUG_MYSTD == 1
