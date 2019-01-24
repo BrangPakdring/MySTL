@@ -19,8 +19,8 @@ BEGIN_NAMESPACE_MYSTD
 		typedef T value_type;
 		typedef value_type *pointer;
 		typedef value_type &reference;
-		typedef pointer iterator;
-		typedef const pointer const_iterator;
+		typedef value_type *iterator;
+		typedef const value_type *const_iterator;
 		typedef size_t size_type;
 		typedef ptrdiff_t difference_type;
 		typedef NAMESPACE_MYSTD::reverse_iterator<iterator> reverse_iterator;
@@ -191,6 +191,13 @@ BEGIN_NAMESPACE_MYSTD
 			fill_initialize(n, value_type());
 		}
 
+		template <class Iterator>
+		vector(Iterator first, Iterator last): vector()
+		{
+			while (first != last)
+				push_back(*first++);
+		}
+
 		~vector()
 		{
 			destroy(start, finish);
@@ -203,7 +210,7 @@ BEGIN_NAMESPACE_MYSTD
 
 		reference back()
 		{
-			return *--end();
+			return *(end() - 1);
 		}
 
 		void push_back(const value_type &x)

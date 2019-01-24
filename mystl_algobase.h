@@ -139,13 +139,13 @@ BEGIN_NAMESPACE_MYSTD
 		return {first1, first2};
 	}
 
-	template <class T>
-	inline void swap(T &a, T &b)
-	{
-		T tmp = a;
-		a = b;
-		b = tmp;
-	}
+//	template <class T>
+//	inline void swap(T &a, T &b)
+//	{
+//		T tmp = a;
+//		a = b;
+//		b = tmp;
+//	}
 
 	template <class RandomAccessIterator, class OutputIterator, class Difference>
 	inline OutputIterator
