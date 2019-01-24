@@ -69,18 +69,21 @@ BEGIN_NAMESPACE_MYSTD
 		return first;
 	}
 
-	template <class ForwardIterator1, class ForwardIterator2>
-	inline void iter_swap(ForwardIterator1 a, ForwardIterator2 b)
-	{
-		__iter_swap(a, b, value_type(a));
-	}
-
 	template <class ForwardIterator1, class ForwardIterator2, class T>
 	inline void __iter_swap(ForwardIterator1 a, ForwardIterator2 b, T *)
 	{
 		T tmp = *a;
 		*a = *b;
 		*b = tmp;
+	}
+
+	template <class ForwardIterator1, class ForwardIterator2>
+	inline void iter_swap(ForwardIterator1 a, ForwardIterator2 b)
+	{
+		decltype(*a)tmp = *a;
+		*a = *b;
+		*b = tmp;
+//		__iter_swap(a, b, value_type(a));
 	}
 
 	template <class InputIterator1, class InputIterator2>

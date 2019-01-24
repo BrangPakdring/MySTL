@@ -42,19 +42,6 @@ BEGIN_NAMESPACE_MYSTD
 		p->~T();
 	}
 
-	template <class ForwardIterator>
-	inline void destroy(ForwardIterator first, ForwardIterator last)
-	{
-		__destroy(first, last, value_type(first));
-	}
-
-	template <class ForwardIterator, class T>
-	inline void __destroy(ForwardIterator first, ForwardIterator last, T *)
-	{
-		using trivial_destructor = typename __type_traits<T>::has_trivial_destructor;
-		__destroy_aux(first, last, trivial_destructor());
-	}
-
 	template <class ForwardIterator, class T>
 	inline void __destroy_aux(ForwardIterator first, ForwardIterator last, __false_type)
 	{
@@ -69,6 +56,19 @@ BEGIN_NAMESPACE_MYSTD
 	inline void __destroy_aux(ForwardIterator, ForwardIterator, __true_type)
 	{
 		// Do nothing.
+	}
+
+	template <class ForwardIterator, class T>
+	inline void __destroy(ForwardIterator first, ForwardIterator last, T *)
+	{
+		using trivial_destructor = typename __type_traits<T>::has_trivial_destructor;
+		__destroy_aux(first, last, trivial_destructor());
+	}
+
+	template <class ForwardIterator>
+	inline void destroy(ForwardIterator first, ForwardIterator last)
+	{
+		__destroy(first, last, value_type(first));
 	}
 
 

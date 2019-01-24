@@ -9,21 +9,9 @@
 #include "type_traits.h"
 #include "mystl_construct.h"
 #include "mystl_iterator.h"
+#include "mystl_algobase.h"
 
 BEGIN_NAMESPACE_MYSTD
-
-	template <class ForwardIterator, class Size, class T>
-	inline ForwardIterator uninitialized_fill_n(ForwardIterator first, Size n, const T &x)
-	{
-		return __uninitialized_fill_n(first, n, x, value_type(first));
-	}
-
-	template <class ForwardIterator, class Size, class T, class T1>
-	inline ForwardIterator __uninitialized_fill_n(ForwardIterator first, Size n, const T &x, T1 *)
-	{
-		typedef typename __type_traits<T1>::is_POD_type is_POD;
-		return __uninitialized_fill_n_aux(first, n, x, is_POD());
-	}
 
 	template <class ForwardIterator, class Size, class T>
 	inline ForwardIterator __uninitialized_fill_n_aux(ForwardIterator first, Size n, const T &x, __true_type)
@@ -40,10 +28,32 @@ BEGIN_NAMESPACE_MYSTD
 		return cur;
 	}
 
-	template <class InputIterator, class ForwardIterator>
-	inline ForwardIterator uninitialized_copy(InputIterator first, InputIterator last, ForwardIterator result)
+	template <class ForwardIterator, class Size, class T, class T1>
+	inline ForwardIterator __uninitialized_fill_n(ForwardIterator first, Size n, const T &x, T1 *)
 	{
-		return __uninitialized_copy(first, last, result, value_type(result));
+		typedef typename __type_traits<T1>::is_POD_type is_POD;
+		return __uninitialized_fill_n_aux(first, n, x, is_POD());
+	}
+
+	template <class ForwardIterator, class Size, class T>
+	inline ForwardIterator uninitialized_fill_n(ForwardIterator first, Size n, const T &x)
+	{
+		return __uninitialized_fill_n(first, n, x, value_type(first));
+	}
+
+	template <class InputIterator, class ForwardIterator>
+	inline ForwardIterator __uninitialized_copy_aux(InputIterator first, InputIterator last, ForwardIterator result, __true_type)
+	{
+		return copy(first, last, result);
+	}
+
+	template <class InputIterator, class ForwardIterator>
+	inline ForwardIterator __uninitialized_copy_aux(InputIterator first, InputIterator last, ForwardIterator result, __false_type)
+	{
+		ForwardIterator cur = result;
+		while (first != last)
+			construct(/*&**/cur++, *first++);
+		return cur;
 	}
 
 	template <class InputIterator, class ForwardIterator, class T>
@@ -53,19 +63,10 @@ BEGIN_NAMESPACE_MYSTD
 		return __uninitialized_copy_aux(first, last, result, is_POD());
 	}
 
-	template <class InputIterator, class ForwardIterator, class T>
-	inline ForwardIterator __uninitialized_copy_aux(InputIterator first, InputIterator last, ForwardIterator result, __true_type)
+	template <class InputIterator, class ForwardIterator>
+	inline ForwardIterator uninitialized_copy(InputIterator first, InputIterator last, ForwardIterator result)
 	{
-		return copy(first, last, result);
-	}
-
-	template <class InputIterator, class ForwardIterator, class T>
-	inline ForwardIterator __uninitialized_copy_aux(InputIterator first, InputIterator last, ForwardIterator result, __false_type)
-	{
-		ForwardIterator cur = result;
-		while (first != last)
-			construct(&*cur++, *first++);
-		return cur;
+		return __uninitialized_copy(first, last, result, value_type(result));
 	}
 
 	template <class ForwardIterator, class T>

@@ -8,6 +8,8 @@ add_executable(DebugList list.h main.cpp)
 add_executable(DebugFunctional functional.h main.cpp)
 add_executable(DebugInitializerList main.cpp)
 add_executable(DebugDeque stack.h deque.h queue.h main.cpp)
+add_executable(DebugVector vector.h main.cpp)
+
 
 add_compile_options(" -lthread")
 set(CMAKE_CXX_FLAGS -pthread)
