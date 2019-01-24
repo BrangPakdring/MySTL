@@ -19,6 +19,7 @@ BEGIN_NAMESPACE_MYSTD
 		typedef T value_type;
 		typedef value_type *pointer;
 		typedef value_type &reference;
+		typedef const value_type &const_reference;
 		typedef value_type *iterator;
 		typedef const value_type *const_iterator;
 		typedef size_t size_type;
@@ -191,8 +192,8 @@ BEGIN_NAMESPACE_MYSTD
 			fill_initialize(n, value_type());
 		}
 
-		template <class Iterator>
-		vector(Iterator first, Iterator last): vector()
+		template <class InputIterator>
+		vector(InputIterator first, InputIterator last): vector()
 		{
 			while (first != last)
 				push_back(*first++);
@@ -208,7 +209,17 @@ BEGIN_NAMESPACE_MYSTD
 			return *begin();
 		}
 
+		const_reference front() const
+		{
+			return *begin();
+		}
+
 		reference back()
+		{
+			return *(end() - 1);
+		}
+
+		const_reference back() const
 		{
 			return *(end() - 1);
 		}
