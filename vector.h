@@ -27,7 +27,7 @@ BEGIN_NAMESPACE_MYSTD
 		typedef NAMESPACE_MYSTD::reverse_iterator<iterator> reverse_iterator;
 		typedef NAMESPACE_MYSTD::reverse_iterator<const_iterator> const_reverse_iterator;
 
-	ACCESSIBILITY(protected):
+	protected
 
 		typedef simple_alloc<value_type, Alloc> data_allocator;
 		iterator start;

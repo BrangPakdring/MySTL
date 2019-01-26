@@ -24,9 +24,9 @@ using std::pair;
 
 #define DEBUG_MYSTD 1
 #if DEBUG_MYSTD == 1
-#define ACCESSIBILITY(x) public
+#define protected public
+#define private public
 #elif DEBUG_MYSTD == 0
-#define ACCESSIBILITY(x) x
 #endif
 #ifndef NAMESPACE_MYSTD
 #define NAMESPACE_MYSTD mystd

@@ -32,22 +32,22 @@ BEGIN_NAMESPACE_MYSTD
 
 		static pointer allocate(size_type n, const void * = nullptr)
 		{
-			return mystd::allocate((difference_type) n, (pointer) 0);
+			return NAMESPACE_MYSTD::allocate((difference_type) n, (pointer) 0);
 		}
 
 		static void deallocate(pointer p, size_type n)
 		{
-			mystd::deallocate(p);
+			NAMESPACE_MYSTD::deallocate(p);
 		}
 
 		static void construct(pointer p, const T &value)
 		{
-			mystd::construct(p, value);
+			NAMESPACE_MYSTD::construct(p, value);
 		}
 
 		static void destroy(pointer p)
 		{
-			mystd::destroy(p);
+			NAMESPACE_MYSTD::destroy(p);
 		}
 
 		static pointer address(reference x)

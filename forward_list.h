@@ -121,7 +121,7 @@ BEGIN_NAMESPACE_MYSTD
 		typedef __forward_list_iterator<T, T &, T *> iterator;
 		typedef __forward_list_iterator<T, const T &, const T *> const_iterator;
 
-	ACCESSIBILITY(protected):
+	protected
 		typedef __forward_list_node<T> list_node;
 		typedef __forward_list_node_base list_node_base;
 		typedef __forward_list_iterator_base iterator_base;
