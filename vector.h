@@ -12,7 +12,7 @@
 
 BEGIN_NAMESPACE_MYSTD
 
-	template <class T, class Alloc = allocator<T>>
+	template <class T, class Alloc = allocator <T>>
 	class vector
 	{
 	public:
@@ -27,9 +27,9 @@ BEGIN_NAMESPACE_MYSTD
 		typedef NAMESPACE_MYSTD::reverse_iterator<iterator> reverse_iterator;
 		typedef NAMESPACE_MYSTD::reverse_iterator<const_iterator> const_reverse_iterator;
 
-	protected
+	protected:
 
-		typedef simple_alloc<value_type, Alloc> data_allocator;
+		typedef simple_alloc <value_type, Alloc> data_allocator;
 		iterator start;
 		iterator finish;
 		iterator end_of_storage;
@@ -154,7 +154,7 @@ BEGIN_NAMESPACE_MYSTD
 
 		size_type size() const
 		{
-			return size_type(end() - begin());
+			return size_type(finish - start);
 		}
 
 		size_type capacity() const
@@ -176,10 +176,8 @@ BEGIN_NAMESPACE_MYSTD
 		{
 		}
 
-		vector(const initializer_list<value_type>&il) : vector()
+		vector(const initializer_list<value_type> &il) : vector(il.begin(), il.end())
 		{
-			for (const auto&item : il)
-				push_back(item);
 		}
 
 		vector(size_type n, const value_type &value) : vector()
@@ -263,7 +261,7 @@ BEGIN_NAMESPACE_MYSTD
 			erase(start, finish);
 		}
 
-		void insert(iterator position, size_type n, const value_type& x)
+		void insert(iterator position, size_type n, const value_type &x)
 		{
 			if (!n)return;
 			if (size_type(end_of_storage - finish) >= n)
@@ -313,9 +311,22 @@ BEGIN_NAMESPACE_MYSTD
 			}
 		}
 
-		void insert(iterator position, const value_type& x)
+		void insert(iterator position, const value_type &x)
 		{
 			insert(position, 1, x);
+		}
+
+		void reserve(size_type n)
+		{
+			if (n <= capacity())return;
+			iterator new_start, new_finish;
+			new_start = data_allocator::allocate(n);
+			new_finish = uninitialized_copy(start, finish, new_start);
+			destroy(start, finish);
+			deallocate();
+			start = new_start;
+			finish = new_finish;
+			end_of_storage = start + n;
 		}
 	};
 
