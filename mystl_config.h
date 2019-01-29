@@ -13,6 +13,9 @@ namespace mystd
 {
 }
 
+namespace mystd::__mystd_cxx
+{
+}
 
 using std::size_t;
 using std::ptrdiff_t;
@@ -32,6 +35,9 @@ using std::pair;
 #define NAMESPACE_MYSTD mystd
 #define BEGIN_NAMESPACE_MYSTD namespace NAMESPACE_MYSTD {
 #define END_NAMESPACE_MYSTD }
+#ifndef NAMESPACE_MYSTD_CXX
+#define NAMESPACE_MYSTD_CXX NAMESPACE_MYSTD:: __my_cxx
+#endif
 #endif
 
 #endif //MYSTL_MYSTL_CONFIG_H
