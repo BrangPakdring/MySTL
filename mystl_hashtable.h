@@ -35,7 +35,13 @@ BEGIN_NAMESPACE_MYSTD
 		T value;
 	};
 
+	template <class Val, class Key, class HashFunc, class ExtractKey, class EqualKey, class Alloc>
+	struct __hashtable_iterator;
+
 	template <class Val, class Key, class HashFunc, class ExtractKey, class EqualKey, class Alloc = allocator<Val>>
+	class hashtable;
+
+	template <class Val, class Key, class HashFunc, class ExtractKey, class EqualKey, class Alloc>
 	class hashtable
 	{
 	public:
@@ -43,6 +49,9 @@ BEGIN_NAMESPACE_MYSTD
 		typedef EqualKey key_equal;
 		typedef size_t size_type;
 		typedef Val value_type;
+		typedef typename __hashtable_iterator<Val, Key, HashFunc, ExtractKey, EqualKey, Alloc>::iterator iterator;
+		typedef typename __hashtable_iterator<Val, Key, HashFunc, ExtractKey, EqualKey, Alloc>::const_iterator const_iterator;
+
 	private:
 		hasher hash;
 		key_equal equals;
@@ -81,7 +90,7 @@ BEGIN_NAMESPACE_MYSTD
 
 		void delete_node(node*n)
 		{
-			destroy(n);
+			destroy(&n->value);
 			node_allocator::deallocate(n);
 		}
 
@@ -100,9 +109,30 @@ BEGIN_NAMESPACE_MYSTD
 
 	public:
 		hashtable(size_type n, const hasher&hf, const key_equal&eql)
-		: hasher (hf), equals(eql), get_key(ExtractKey()), num_elements()
+		: hash (hf), equals(eql), get_key(ExtractKey()), num_elements()
 		{
 			initialize_buckets(n);
+		}
+
+		pair<iterator, bool>insert_unique(const value_type&obj)
+		{
+			resize(num_elements + 1);
+			return insert_unique_noresize(obj);
+		}
+
+		void resize(size_type n)
+		{
+
+		}
+
+		pair<iterator, bool>insert_unique_noresize(const value_type&obj)
+		{
+
+		}
+
+		iterator insert_equal(const value_type&obj)
+		{
+
 		}
 	};
 
@@ -112,6 +142,7 @@ BEGIN_NAMESPACE_MYSTD
 		typedef __hashtable_iterator self;
 		typedef hashtable<Val, Key, HashFunc, ExtractKey, EqualKey, Alloc> hashtable;
 		typedef __hashtable_iterator iterator;
+		typedef __hashtable_iterator<const Val, const Key, HashFunc, ExtractKey, EqualKey, Alloc>const_iterator;
 		typedef __hashtable_node<Val> node;
 		typedef forward_iterator_tag iterator_category;
 		typedef Val value_type;

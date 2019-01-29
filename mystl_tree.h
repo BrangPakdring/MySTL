@@ -2,8 +2,8 @@
 // Created by brang on 1/26/19.
 //
 
-#ifndef MYSTL_MYSTL_TREE_H
-#define MYSTL_MYSTL_TREE_H
+#ifndef MYSTL_TREE_H
+#define MYSTL_TREE_H
 
 #include "mystl_config.h"
 #include "mystl_iterator.h"
@@ -11,7 +11,6 @@
 
 BEGIN_NAMESPACE_MYSTD
 
-//	using __rb_tree_color_type = bool;
 	enum __rb_tree_color_type
 	{
 		__rb_tree_red, __rb_tree_black
@@ -418,4 +417,4 @@ BEGIN_NAMESPACE_MYSTD
 
 END_NAMESPACE_MYSTD
 
-#endif //MYSTL_MYSTL_TREE_H
+#endif //MYSTL_TREE_H
