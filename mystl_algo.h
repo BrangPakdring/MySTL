@@ -381,12 +381,84 @@ BEGIN_NAMESPACE_MYSTD
 
 	template <class InputIterator, class OutputIterator, class T>
 	OutputIterator
-	replace_copy(InputIterator first, InputIterator last, OutputIterator result, const T&old_value, const T &new_value)
+	replace_copy(InputIterator first, InputIterator last, OutputIterator result, const T &old_value, const T &new_value)
 	{
-		return replace_copy_if(first, last, result, [&old_value](const T&v){ return v == old_value;}, new_value);
+		return replace_copy_if(first, last, result, [&old_value](const T &v)
+		{ return v == old_value; }, new_value);
 	}
 
+	template <class BidirectionalIterator>
+	void __reverse(BidirectionalIterator first, BidirectionalIterator last, bidirectional_iterator_tag)
+	{
+		while (first != last)
+			if (first == last || first == --last)return;
+			else iter_swap(first++, --last);
+	}
 
+	template <class RandomAccessIterator>
+	void __reverse(RandomAccessIterator first, RandomAccessIterator last, random_access_iterator_tag)
+	{
+		while (first < last)
+			iter_swap(first++, --last);
+	}
+
+	template <class BidirectionalIterator>
+	inline void reverse(BidirectionalIterator first, BidirectionalIterator last)
+	{
+		__reverse(first, last, iterator_category(first));
+	}
+
+	template <class BidirectionalIterator, class OutputIterator>
+	OutputIterator reverse_copy(BidirectionalIterator first, BidirectionalIterator last, OutputIterator result)
+	{
+		while (first != last)
+			*result++ = *--last;
+	}
+
+	template <class ForwardIterator>
+	void __rotate(ForwardIterator first, ForwardIterator middle, ForwardIterator last, forward_iterator_tag)
+	{
+		ForwardIterator i = middle;
+		while (true)
+		{
+			iter_swap(first++, i++);
+			if (first == middle)
+			{
+				if (i == last)return;
+				middle = i;
+			}
+			else if (i == last)
+				i = middle;
+		}
+	}
+
+	template <class BidirectionalIterator>
+	void __rotate(BidirectionalIterator first, BidirectionalIterator middle, BidirectionalIterator last, bidirectional_iterator_tag)
+	{
+		reverse(first, middle);
+		reverse(middle, last);
+		reverse(first, last);
+	}
+
+	template <class RandomAccessIterator>
+	void __rotate(RandomAccessIterator first, RandomAccessIterator middle, RandomAccessIterator last, random_access_iterator_tag)
+	{
+		using difference_type = typename iterator_traits<RandomAccessIterator>::difference_type ;
+
+	}
+
+	template <class ForwardIterator>
+	inline void rotate(ForwardIterator first, ForwardIterator middle, ForwardIterator last)
+	{
+		if (first == middle || last == middle)return;
+		__rotate(first, middle, last, iterator_category(first));
+	}
+
+	template <class ForwardIterator, class OutputIterator>
+	OutputIterator rotate_copy(ForwardIterator first, ForwardIterator middle, ForwardIterator last, OutputIterator result)
+	{
+		copy(first, middle, copy(middle, last, result));
+	}
 
 END_NAMESPACE_MYSTD
 
