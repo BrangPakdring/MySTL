@@ -13,7 +13,7 @@ BEGIN_NAMESPACE_MYSTD
 	template <class T, size_t N>
 	class array
 	{
-	protected
+	protected:
 		T arr[N];
 	public:
 		typedef T value_type;

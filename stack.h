@@ -18,7 +18,7 @@ BEGIN_NAMESPACE_MYSTD
 		typedef typename Sequence::size_type size_type;
 		typedef typename Sequence::reference reference;
 		typedef typename Sequence::const_reference const_reference;
-	protected
+	protected:
 		Sequence c;
 	public:
 		bool empty() const

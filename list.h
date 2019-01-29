@@ -95,7 +95,7 @@ BEGIN_NAMESPACE_MYSTD
 	template <class T, class Alloc = allocator<T>>
 	class list
 	{
-	protected
+	protected:
 		typedef __list_node<T> list_node;
 		typedef simple_alloc<T, Alloc> list_node_allocator;
 
@@ -110,7 +110,7 @@ BEGIN_NAMESPACE_MYSTD
 		typedef T &reference;
 		typedef ptrdiff_t difference_type;
 
-	protected
+	protected:
 		link_type node;
 		size_type cnt;
 

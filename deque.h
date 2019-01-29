@@ -174,7 +174,7 @@ BEGIN_NAMESPACE_MYSTD
 		typedef NAMESPACE_MYSTD::reverse_iterator<const_iterator> const_reverse_iterator;
 		typedef ptrdiff_t difference_type;
 
-	protected
+	protected:
 		static size_t buffer_size()
 		{
 			return __deque_iterator<T, T &, T *, BufSize>::buffer_size();
