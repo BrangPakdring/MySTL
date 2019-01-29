@@ -10,6 +10,7 @@
 #include "mystl_uninitialized.h"
 #include "mystl_algobase.h"
 #include <cassert>
+
 BEGIN_NAMESPACE_MYSTD
 
 	inline size_t __deque_buf_size(size_t n, size_t sz)
@@ -158,7 +159,7 @@ BEGIN_NAMESPACE_MYSTD
 		}
 	};
 
-	template <class T, class Alloc = allocator<T>, size_t BufSize = 0>
+	template <class T, class Alloc = allocator <T>, size_t BufSize = 0>
 	class deque
 	{
 	public:
@@ -175,13 +176,14 @@ BEGIN_NAMESPACE_MYSTD
 		typedef ptrdiff_t difference_type;
 
 	protected:
+
 		static size_t buffer_size()
 		{
 			return __deque_iterator<T, T &, T *, BufSize>::buffer_size();
 		}
 
 		typedef pointer *map_pointer;
-		typedef simple_alloc<pointer, allocator<pointer>> map_allocator;
+		typedef simple_alloc <pointer, allocator<pointer>> map_allocator;
 
 		iterator start;
 		iterator finish;
@@ -371,9 +373,17 @@ BEGIN_NAMESPACE_MYSTD
 
 	public:
 
-		deque(): map_size(0)
+		deque() : map_size()
 		{
 			empty_initialize();
+		}
+
+		deque(const initializer_list<value_type> &il) : deque()
+		{
+			for (const auto &item : il)
+			{
+				push_back(item);
+			}
 		}
 
 		deque(size_type n, const value_type &value) : start(), finish(), map(), map_size()
