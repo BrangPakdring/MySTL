@@ -11,7 +11,7 @@ BEGIN_NAMESPACE_MYSTD
 
 	namespace __my_cxx
 	{
-		template <class InputIterator1, class InputIterator2>
+		template <class InputIterator1, class InputIterator2 = InputIterator1>
 		struct it_equal_to
 		{
 			bool operator()(const InputIterator1 &i1, const InputIterator2 &i2)
@@ -20,7 +20,7 @@ BEGIN_NAMESPACE_MYSTD
 			}
 		};
 
-		template <class InputIterator1, class InputIterator2>
+		template <class InputIterator1, class InputIterator2 = InputIterator1>
 		struct it_less
 		{
 			bool operator()(const InputIterator1 &i1, const InputIterator2 &i2)
@@ -29,7 +29,7 @@ BEGIN_NAMESPACE_MYSTD
 			}
 		};
 
-		template <class InputIterator1, class InputIterator2>
+		template <class InputIterator1, class InputIterator2 = InputIterator1>
 		struct it_greater
 		{
 			bool operator()(const InputIterator1 &i1, const InputIterator2 &i2)

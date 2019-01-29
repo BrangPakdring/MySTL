@@ -15,9 +15,8 @@ BEGIN_NAMESPACE_MYSTD
 
 	inline size_t __deque_buf_size(size_t n, size_t sz)
 	{
-		size_t r = n ? n : sz < 512 ? size_t(512 / sz)
-		                            : size_t(1);
-//		cout << r << endl;
+		size_t r = n ?: sz < 512 ? size_t(512 / sz)
+		                         : size_t(1);
 		return r;
 	}
 
