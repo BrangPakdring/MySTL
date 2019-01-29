@@ -69,21 +69,12 @@ BEGIN_NAMESPACE_MYSTD
 		return first;
 	}
 
-	template <class ForwardIterator1, class ForwardIterator2, class T>
-	inline void __iter_swap(ForwardIterator1 a, ForwardIterator2 b, T *)
-	{
-		T tmp = *a;
-		*a = *b;
-		*b = tmp;
-	}
-
 	template <class ForwardIterator1, class ForwardIterator2>
 	inline void iter_swap(ForwardIterator1 a, ForwardIterator2 b)
 	{
-		decltype(*a)tmp = *a;
+		auto tmp = *a;
 		*a = *b;
 		*b = tmp;
-//		__iter_swap(a, b, value_type(a));
 	}
 
 	template <class InputIterator1, class InputIterator2>
@@ -121,6 +112,15 @@ BEGIN_NAMESPACE_MYSTD
 		return result ? result < 0 : len1 < len2;
 	}
 
+	inline bool
+	lexicographical_compare(const char *first1, const char *last1, const char *first2, const char *last2)
+	{
+		const size_t len1 = last1 - first1;
+		const size_t len2 = last2 - first2;
+		const int result = memcmp(first1, first2, min(len1, len2));
+		return result ? result < 0 : len1 < len2;
+	}
+
 	template <class InputIterator1, class InputIterator2>
 	inline pair<InputIterator1, InputIterator2>
 	mismatch(InputIterator1 first1, InputIterator1 last1, InputIterator2 first2)
@@ -139,13 +139,13 @@ BEGIN_NAMESPACE_MYSTD
 		return {first1, first2};
 	}
 
-//	template <class T>
-//	inline void swap(T &a, T &b)
-//	{
-//		T tmp = a;
-//		a = b;
-//		b = tmp;
-//	}
+	template <class T>
+	inline void swap(T &a, T &b)
+	{
+		T tmp = a;
+		a = b;
+		b = tmp;
+	}
 
 	template <class RandomAccessIterator, class OutputIterator, class Difference>
 	inline OutputIterator
@@ -212,7 +212,8 @@ BEGIN_NAMESPACE_MYSTD
 	}
 
 	template <class RandomAccessIterator1, class OutputIterator, class Distance>
-	OutputIterator __copy_backward_d(RandomAccessIterator1 first, RandomAccessIterator1 last, OutputIterator result, Distance*)
+	OutputIterator
+	__copy_backward_d(RandomAccessIterator1 first, RandomAccessIterator1 last, OutputIterator result, Distance *)
 	{
 		Distance n = last - first;
 		while (n--)
