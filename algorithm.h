@@ -6,18 +6,13 @@
 #define MYSTL_ALGORITHM_H
 
 #include "mystl_config.h"
-#include <algorithm>
 #include "mystl_heap.h"
+#include "mystl_numeric.h"
+#include "mystl_algobase.h"
+#include "mystl_algo.h"
 
 BEGIN_NAMESPACE_MYSTD
 
-	template <class T>
-	void swap(T &a, T &b)
-	{
-		T t = a;
-		a = b;
-		b =  t;
-	}
 
 END_NAMESPACE_MYSTD
 

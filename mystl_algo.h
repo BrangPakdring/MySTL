@@ -328,10 +328,9 @@ BEGIN_NAMESPACE_MYSTD
 		return first == last ? first : remove_copy_if(++next, last, first, pred);
 	}
 
-	template <class InputIterator, class OutputIterator>
+	template <class InputIterator, class OutputIterator, class T>
 	OutputIterator remove_copy(InputIterator first, InputIterator last, OutputIterator result, const T &value)
 	{
-		using T = typename iterator_traits<InputIterator>::value_type;
 		return remove_copy_if(first, last, result, [&value](const T &v)
 		{ return v == value; });
 		while (first != last)
