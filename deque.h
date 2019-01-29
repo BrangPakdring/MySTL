@@ -371,7 +371,7 @@ BEGIN_NAMESPACE_MYSTD
 
 	public:
 
-		deque()
+		deque(): map_size(0)
 		{
 			empty_initialize();
 		}
